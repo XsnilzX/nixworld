@@ -1,0 +1,30 @@
+# PLACEHOLDER: replace all `age1...` recipients with real public Age keys
+# before encrypting any file with `sops`.
+keys:
+  #- &admin_myuser age1replacewithyouradminpublickeyxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  - &nixhael age1gqzvzd2ewvta5grp3whe2a5tsd463rg6n2l059alrdnq8thcjdrsu07ced
+  - &nixspo age1tqaq3s7vzncvp3dr4kefwmltfw40423w6t58f43snmqdfmwjxe0qafsdhw
+  - &backup age1ctrh545yzm2y5v6rmn5adrpmtnqpprqnk6g99pdu7nn7zchw2g6qy0eeqz
+
+creation_rules:
+  - path_regex: secrets/common\.yaml$
+    key_groups:
+      - age:
+          #- *admin_myuser
+          - *nixhael
+          - *nixspo
+          - *backup
+
+  - path_regex: secrets/nixhael\.yaml$
+    key_groups:
+      - age:
+          #- *admin_myuser
+          - *nixhael
+          - *backup
+
+  - path_regex: secrets/nixspo\.yaml$
+    key_groups:
+      - age:
+          #- *admin_myuser
+          - *nixspo
+          - *backup

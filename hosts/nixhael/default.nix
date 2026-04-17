@@ -1,0 +1,12 @@
+{...}: {
+  imports = [
+    ../common
+    ./hardware-configuration.nix
+    ./disko.nix
+    ../../profiles/nixos/desktop.nix
+    ../../profiles/nixos/dev.nix
+  ];
+
+  networking.hostName = "nixhael";
+  sops.defaultSopsFile = ../../secrets/nixhael.yaml;
+}
