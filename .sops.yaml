@@ -28,3 +28,10 @@ creation_rules:
           #- *admin_myuser
           - *nixspo
           - *backup
+
+  - path_regex: secrets/users/xsnilzx\.yaml$
+    key_groups:
+      - age:
+          - *nixhael
+          - *nixspo
+          - *backup
