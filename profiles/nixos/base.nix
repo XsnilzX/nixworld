@@ -10,4 +10,12 @@ in {
 
   networking.firewall.enable = true;
   system.stateVersion = "25.05";
+
+  environment.systemPackages = with pkgs; [
+    vim
+    wget
+    nh
+    exfatprogs
+    wireguard-tools
+  ];
 }

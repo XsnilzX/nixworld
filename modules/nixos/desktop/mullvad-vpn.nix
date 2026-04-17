@@ -1,0 +1,3 @@
+{
+  mullvad-vpn.enable = true;
+}
