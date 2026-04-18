@@ -1,4 +1,4 @@
-{...}: let
+{ pkgs, ... }: let
   nixosModules = import ../../modules/nixos;
 in {
   imports = [

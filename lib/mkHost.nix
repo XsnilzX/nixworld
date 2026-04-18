@@ -1,4 +1,4 @@
-{ inputs }:
+{ inputs, self }:
 {
   hostname,
   system ? "x86_64-linux",
@@ -11,7 +11,7 @@ inputs.nixpkgs.lib.nixosSystem {
 
   specialArgs =
     {
-      inherit inputs hostname username;
+      inherit inputs self hostname username;
     }
     // specialArgs;
 
@@ -25,7 +25,7 @@ inputs.nixpkgs.lib.nixosSystem {
         useGlobalPkgs = true;
         useUserPackages = true;
         extraSpecialArgs = {
-          inherit inputs hostname username;
+          inherit inputs self hostname username;
         };
       };
     }

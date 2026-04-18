@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -25,29 +26,41 @@
     };
   };
 
-  outputs = inputs @ {...}: let
-    localLib = import ./lib {inherit inputs;};
-  in {
-    lib = localLib;
-
-    nixosConfigurations = {
-      nixhael = localLib.mkHost {
-        hostname = "nixhael";
-        system = "x86_64-linux";
-        modules = [./hosts/nixhael];
+  outputs = inputs @ {
+    self,
+    flake-parts,
+    ...
+  }:
+    let
+      localLib = import ./lib {
+        inherit inputs self;
       };
+    in
+      flake-parts.lib.mkFlake { inherit inputs; } {
+        systems = [ "x86_64-linux" ];
 
-      nixspo = localLib.mkHost {
-        hostname = "nixspo";
-        system = "x86_64-linux";
-        modules = [./hosts/nixspo];
-      };
+        flake = {
+          lib = localLib;
+          nixosConfigurations = localLib.discoverHosts {
+            hostsDir = ./hosts;
+          };
+        };
 
-      server-01 = localLib.mkHost {
-        hostname = "server-01";
-        system = "x86_64-linux";
-        modules = [./hosts/server-01];
+        perSystem = { pkgs, ... }: {
+          devShells.repo = pkgs.mkShell {
+            packages = with pkgs; [
+              age
+              alejandra
+              deadnix
+              git
+              jq
+              nh
+              nix
+              sops
+              ssh-to-age
+              statix
+            ];
+          };
+        };
       };
-    };
-  };
 }
