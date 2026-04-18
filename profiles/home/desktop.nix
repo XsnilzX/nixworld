@@ -2,8 +2,8 @@
   homeModules = import ../../modules/home;
 in {
   imports = [
+    homeModules.desktop.audio
     homeModules.desktop.ghostty
-    homeModules.desktop.waybar
   ];
 
   home.packages = with pkgs; [

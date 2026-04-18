@@ -1,26 +1,35 @@
 {
   config,
+  lib,
   pkgs,
   username ? "xsnilzx",
   ...
-}: {
-  sops.secrets."users/${username}/passwordHash" = {
-    sopsFile = ../../secrets/users + "/${username}.yaml";
-    neededForUsers = true;
+}: let
+  passwordHashFile = ../../secrets/users + "/${username}.yaml";
+  hasPasswordHash = builtins.pathExists passwordHashFile;
+in {
+  sops.secrets = lib.optionalAttrs hasPasswordHash {
+    passwordHash = {
+      sopsFile = passwordHashFile;
+      neededForUsers = true;
+    };
   };
 
-  users.mutableUsers = false;
+  users.mutableUsers = !hasPasswordHash;
 
-  users.users.${username} = {
-    isNormalUser = true;
-    description = "Primary user";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-    ];
-    shell = pkgs.zsh;
-    hashedPasswordFile = config.sops.secrets."users/${username}/passwordHash".path;
-  };
+  users.users.${username} =
+    {
+      isNormalUser = true;
+      description = "Primary user";
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+      ];
+      shell = pkgs.zsh;
+    }
+    // lib.optionalAttrs hasPasswordHash {
+      hashedPasswordFile = config.sops.secrets.passwordHash.path;
+    };
 
   programs.zsh.enable = true;
 

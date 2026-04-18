@@ -9,7 +9,10 @@
       ../../profiles/home/base.nix
       ../../profiles/home/dev.nix
     ]
-    ++ lib.optionals (hostname != "server-01") [
+    ++ lib.optionals (hostname == "nixspo") [
+      ../../profiles/home/niri.nix
+    ]
+    ++ lib.optionals (hostname != "server-01" && hostname != "nixspo") [
       ../../profiles/home/desktop.nix
     ];
 

@@ -8,5 +8,4 @@
   ];
 
   networking.hostName = "nixhael";
-  sops.defaultSopsFile = ../../secrets/nixhael.yaml;
 }

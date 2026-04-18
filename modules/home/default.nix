@@ -24,8 +24,10 @@
     images = ./desktop/images.nix;
     pdf = ./desktop/pdf.nix;
     recording = ./desktop/recording.nix;
+    swaync = ./desktop/swaync.nix;
     video = ./desktop/video.nix;
-    waybar = ./desktop/waybar.nix;
+    waybar = ./desktop/waybar;
+    wleave = ./desktop/wleave.nix;
     writing = ./desktop/writing.nix;
   };
 }

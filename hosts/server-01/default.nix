@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   imports = [
     ../common
     ./hardware-configuration.nix
@@ -8,5 +7,4 @@
   ];
 
   networking.hostName = "server-01";
-  sops.defaultSopsFile = ../../secrets/server-01.yaml;
 }
