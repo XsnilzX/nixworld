@@ -27,6 +27,7 @@ creation_rules:
       - age:
           #- *admin_myuser
           - *nixspo
+          - *nixhael
           - *backup
 
   - path_regex: secrets/users/xsnilzx\.yaml$

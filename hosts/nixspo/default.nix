@@ -7,6 +7,7 @@
     ../common
     ./hardware-configuration.nix
     ./disko.nix
+    ./ssh.nix
     inputs.stylix.nixosModules.stylix
     ./stylix.nix
     ../../profiles/nixos/niri.nix

@@ -11,6 +11,14 @@ Dieses Repository ist ein bewusst schlankes Grundgeruest fuer ein Multi-Host-Nix
 - `secrets/`: verschluesselte SOPS-Dateien pro Host, gemeinsam und pro User
 - `lib/`: `mkHost`- und Host-Discovery-Helper fuer Flake-Outputs
 
+## SSH pro Host
+
+- `hosts/<name>/ssh.nix` ist die zentrale Stelle fuer hostbezogene SSH-Konfiguration.
+- Public Login-Keys kommen in `users.users.<name>.openssh.authorizedKeys.keys`.
+- SSH-Keypaare liegen verschluesselt unter `ssh_keys.<keyname>.private` und `ssh_keys.<keyname>.public` in `secrets/<hostname>.yaml`.
+- Alle Eintraege unter `ssh_keys` werden automatisch als `~/.ssh/<keyname>` und `~/.ssh/<keyname>.pub` materialisiert.
+- SSH-Client-Ziele ueber `home-manager.users.<name>.programs.ssh.matchBlocks` bleiben separat und koennen pro Host manuell ergaenzt werden.
+
 ## Neuer Host
 
 1. `hosts/<name>/` anlegen
