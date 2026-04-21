@@ -57,19 +57,23 @@
         };
 
         perSystem = { pkgs, ... }: {
-          devShells.repo = pkgs.mkShell {
-            packages = with pkgs; [
-              age
-              alejandra
-              deadnix
-              git
-              jq
-              nh
-              nix
-              sops
-              ssh-to-age
-              statix
-            ];
+          devShells = rec {
+            default = repo;
+
+            repo = pkgs.mkShell {
+              packages = with pkgs; [
+                age
+                alejandra
+                deadnix
+                jq
+                nh
+                nix
+                sops
+                ssh-to-age
+                statix
+                codex
+              ];
+            };
           };
         };
       };
