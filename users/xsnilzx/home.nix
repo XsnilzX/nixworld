@@ -1,4 +1,5 @@
 {
+  config,
   hostname,
   lib,
   username ? "xsnilzx",
@@ -12,7 +13,7 @@
     ++ lib.optionals (hostname == "nixspo") [
       ../../profiles/home/niri.nix
     ]
-    ++ lib.optionals (hostname != "server-01" && hostname != "nixspo") [
+    ++ lib.optionals (hostname == "nixhael") [
       ../../profiles/home/desktop.nix
     ];
 
@@ -21,4 +22,6 @@
     homeDirectory = "/home/${username}";
     stateVersion = "25.11";
   };
+
+  gtk.gtk4.theme = config.gtk.theme;
 }

@@ -1,16 +1,18 @@
-{pkgs, ...}: {
-  programs = {
-    gamemode.enable = true;
+{...}: {
+  flake.nixosModules.desktop-steam = {pkgs, ...}: {
+    programs = {
+      gamemode.enable = true;
 
-    steam = {
-      enable = true;
-      remotePlay.openFirewall = true;
-      dedicatedServer.openFirewall = true;
-      localNetworkGameTransfers.openFirewall = true;
+      steam = {
+        enable = true;
+        remotePlay.openFirewall = true;
+        dedicatedServer.openFirewall = true;
+        localNetworkGameTransfers.openFirewall = true;
 
-      extraCompatPackages = with pkgs; [
-        proton-ge-bin
-      ];
+        extraCompatPackages = with pkgs; [
+          proton-ge-bin
+        ];
+      };
     };
   };
 }

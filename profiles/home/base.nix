@@ -1,9 +1,11 @@
-{pkgs, ...}: let
-  homeModules = import ../../modules/home;
-in {
+{
+  pkgs,
+  self,
+  ...
+}: {
   imports = [
-    homeModules.cli.git
-    homeModules.cli.zsh
+    self.homeModules.cli-git
+    self.homeModules.cli-zsh
   ];
 
   home.packages = with pkgs; [

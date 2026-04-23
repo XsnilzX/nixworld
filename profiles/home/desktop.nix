@@ -1,9 +1,17 @@
-{pkgs, ...}: let
-  homeModules = import ../../modules/home;
-in {
+{
+  pkgs,
+  self,
+  ...
+}: {
   imports = [
-    homeModules.desktop.audio
-    homeModules.desktop.ghostty
+    self.homeModules.desktop-audio
+    self.homeModules.desktop-email
+    self.homeModules.desktop-ghostty
+    self.homeModules.desktop-images
+    self.homeModules.desktop-pdf
+    self.homeModules.desktop-recording
+    self.homeModules.desktop-video
+    self.homeModules.desktop-writing
   ];
 
   home.packages = with pkgs; [

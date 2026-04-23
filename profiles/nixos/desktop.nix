@@ -1,8 +1,6 @@
-{pkgs, ...}: let
-  nixosModules = import ../../modules/nixos;
-in {
+{self, ...}: {
   imports = [
     ./desktop-common.nix
-    nixosModules.desktop.kde
+    self.nixosModules.desktop-kde
   ];
 }

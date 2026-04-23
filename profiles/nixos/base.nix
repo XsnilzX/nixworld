@@ -1,11 +1,13 @@
-{ pkgs, ... }: let
-  nixosModules = import ../../modules/nixos;
-in {
+{
+  pkgs,
+  self,
+  ...
+}: {
   imports = [
-    nixosModules.base.locale
-    nixosModules.base.nixSettings
-    nixosModules.base.openssh
-    nixosModules.base.sudo
+    self.nixosModules.base-locale
+    self.nixosModules.base-nix-settings
+    self.nixosModules.base-openssh
+    self.nixosModules.base-sudo
   ];
 
   networking.firewall.enable = true;

@@ -1,8 +1,10 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [
-    # audio
-    pavucontrol
-  ];
+{...}: {
+  flake.homeModules.desktop-audio = {pkgs, ...}: {
+    home.packages = with pkgs; [
+      # audio
+      pavucontrol
+    ];
 
-  services.playerctld.enable = true;
+    services.playerctld.enable = true;
+  };
 }

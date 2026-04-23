@@ -1,7 +1,9 @@
 {...}: {
-  services = {
-    desktopManager.plasma6.enable = true;
-    displayManager.sddm.enable = true;
-    displayManager.sddm.wayland.enable = true;
+  flake.nixosModules.desktop-kde = {...}: {
+    services = {
+      desktopManager.plasma6.enable = true;
+      displayManager.sddm.enable = true;
+      displayManager.sddm.wayland.enable = true;
+    };
   };
 }

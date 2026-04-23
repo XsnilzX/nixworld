@@ -1,8 +1,6 @@
-{...}: let
-  nixosModules = import ../../modules/nixos;
-in {
+{self, ...}: {
   imports = [
-    ./desktop-common.nix
-    nixosModules.desktop.niri
+    ./laptop.nix
+    self.nixosModules.desktop-niri
   ];
 }

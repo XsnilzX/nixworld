@@ -7,5 +7,10 @@
     ../../profiles/nixos/server.nix
   ];
 
-  networking.hostName = "server-01";
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
+  };
+
+  networking.hostName = "homelab";
 }

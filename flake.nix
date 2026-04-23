@@ -7,6 +7,7 @@
     nixpkgs.follows = "nixpkgs-unstable";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
+    import-tree.url = "github:vic/import-tree";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -33,6 +34,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -54,6 +57,11 @@
     };
   in
     flake-parts.lib.mkFlake {inherit inputs;} {
+      imports = [
+        inputs.home-manager.flakeModules.home-manager
+        (inputs.import-tree ./modules)
+      ];
+
       systems = ["x86_64-linux"];
 
       flake = {

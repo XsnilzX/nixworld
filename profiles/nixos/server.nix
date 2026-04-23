@@ -1,10 +1,6 @@
-{ ... }:
-let
-  nixosModules = import ../../modules/nixos;
-in
-{
+{self, ...}: {
   imports = [
     ./base.nix
-    nixosModules.services.tailscale
+    self.nixosModules.services-tailscale
   ];
 }

@@ -1,15 +1,14 @@
 {
   inputs,
+  self,
   ...
-}: let
-  homeModules = import ../../modules/home;
-in {
+}: {
   imports = [
     ./desktop.nix
     inputs.niri.homeModules.niri
-    homeModules.desktop.waybar
-    homeModules.desktop.swaync
-    homeModules.desktop.wleave
+    self.homeModules.desktop-waybar
+    self.homeModules.desktop-swaync
+    self.homeModules.desktop-wleave
   ];
 
   programs.swaylock.enable = true;

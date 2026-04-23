@@ -1,7 +1,8 @@
-{ lib, ... }:
-{
-  services.tailscale = {
-    enable = lib.mkDefault true;
-    openFirewall = true;
+{...}: {
+  flake.nixosModules.services-tailscale = {lib, ...}: {
+    services.tailscale = {
+      enable = lib.mkDefault true;
+      openFirewall = true;
+    };
   };
 }

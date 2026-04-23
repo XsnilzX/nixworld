@@ -1,12 +1,14 @@
-{pkgs, ...}: let
-  nixosModules = import ../../modules/nixos;
-in {
+{
+  pkgs,
+  self,
+  ...
+}: {
   imports = [
     ./base.nix
-    nixosModules.desktop.cachyosKernel
-    nixosModules.desktop.pipewire
-    nixosModules.desktop.steam
-    nixosModules.hardware.bluetooth
+    self.nixosModules.desktop-cachyos-kernel
+    self.nixosModules.desktop-pipewire
+    self.nixosModules.desktop-steam
+    self.nixosModules.hardware-bluetooth
   ];
 
   services = {

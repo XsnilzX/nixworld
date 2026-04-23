@@ -1,3 +1,5 @@
-{
-  programs.obs-studio.enable = true;
+{...}: {
+  flake.homeModules.desktop-recording = {
+    programs.obs-studio.enable = true;
+  };
 }

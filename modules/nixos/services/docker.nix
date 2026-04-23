@@ -1,3 +1,5 @@
-{
-  virtualisation.docker.enable = true;
+{...}: {
+  flake.nixosModules.services-docker = {
+    virtualisation.docker.enable = true;
+  };
 }
