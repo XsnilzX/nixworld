@@ -61,7 +61,7 @@ in {
       * {
         border: none;
         border-radius: 0;
-        font-family: "${font.name}", sans-serif;
+        font-family: "${font.name}", "Font Awesome 7 Free", monospace;
         font-size: ${toString font.size}px;
         min-height: 0;
         color: #${colors.fg};
@@ -126,7 +126,7 @@ in {
       }
 
       #custom-exit {
-        font-family: "Font Awesome 6 Free", "${font.name}", sans-serif;
+        font-family: "Font Awesome 7 Free", "${font.name}", sans-serif;
         color: #${colors.urgent};
       }
 
