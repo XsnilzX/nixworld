@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.desktop-video = {
     programs.mpv = {
       enable = true;

@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.desktop-pdf = {
     programs.zathura = {
       enable = true;

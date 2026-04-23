@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.nixosModules.networking-luh-vpn = {
     config,
     lib,

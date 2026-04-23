@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.cli-zsh = {pkgs, ...}: {
     programs = {
       btop.enable = true;

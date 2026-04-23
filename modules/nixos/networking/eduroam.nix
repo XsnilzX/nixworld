@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.nixosModules.networking-eduroam = {
     config,
     lib,

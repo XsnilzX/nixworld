@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.desktop-email = {
     programs.thunderbird = {
       enable = true;

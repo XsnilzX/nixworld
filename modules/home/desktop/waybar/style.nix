@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.desktop-waybar-style = {
     config,
     lib,

@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.desktop-waybar-modules-niri = {
     config,
     lib,

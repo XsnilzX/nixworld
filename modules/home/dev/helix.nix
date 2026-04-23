@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.dev-helix = {
     pkgs,
     lib,

@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.desktop-waybar-modules-clock = {
     config,
     lib,

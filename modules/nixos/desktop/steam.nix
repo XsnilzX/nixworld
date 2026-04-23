@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.nixosModules.desktop-steam = {pkgs, ...}: {
     programs = {
       gamemode.enable = true;

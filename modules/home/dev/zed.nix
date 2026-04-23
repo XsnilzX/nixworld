@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.dev-zed = {pkgs, ...}: {
     programs.zed-editor = {
       enable = true;

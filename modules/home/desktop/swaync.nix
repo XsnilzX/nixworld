@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.desktop-swaync = {
     services.swaync = {
       enable = true;

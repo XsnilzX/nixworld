@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.cli-starship = {
     programs.starship = {
       enable = true;

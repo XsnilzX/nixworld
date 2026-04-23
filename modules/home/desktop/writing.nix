@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.desktop-writing = {pkgs, ...}: {
     home.packages = with pkgs; [
       zotero

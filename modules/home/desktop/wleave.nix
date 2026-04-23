@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.desktop-wleave = {pkgs, ...}: {
     programs.wleave = {
       enable = true;

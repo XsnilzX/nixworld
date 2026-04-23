@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.nixosModules.desktop-printing = {pkgs, ...}: {
     services = {
       printing = {

@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.cli-zoxide = {
     programs.zoxide = {
       enable = true;

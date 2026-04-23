@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.desktop-waybar-modules = {self, ...}: {
     imports = [
       self.homeModules.desktop-waybar-modules-clock

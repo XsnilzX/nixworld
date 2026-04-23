@@ -26,12 +26,12 @@
   hosts = builtins.filter (host: host != null) (builtins.map discoverHost names);
 
   mkHostConfig = host: let
-    meta = host.meta;
+    inherit (host) meta;
   in
     if !(meta ? system)
     then builtins.throw "Host metadata for '${host.name}' must define `system`."
     else {
-      name = host.name;
+      inherit (host) name;
       value = mkHost (
         {
           hostname = host.name;

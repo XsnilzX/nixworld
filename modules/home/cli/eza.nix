@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake.homeModules.cli-eza = {
     programs.eza = {
       enable = true;
