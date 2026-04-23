@@ -1,5 +1,6 @@
 {
   inputs,
+  pkgs,
   self,
   ...
 }: {
@@ -12,6 +13,10 @@
   ];
 
   programs.swaylock.enable = true;
+
+  home.packages = with pkgs; [
+    xwayland-satellite
+  ];
 
   modules.waybar = {
     enable = true;

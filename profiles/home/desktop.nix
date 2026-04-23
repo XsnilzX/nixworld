@@ -1,9 +1,12 @@
 {
+  inputs,
   pkgs,
+  config,
   self,
   ...
 }: {
   imports = [
+    inputs.zen-browser.homeModules.beta
     self.homeModules.desktop-audio
     self.homeModules.desktop-email
     self.homeModules.desktop-gaming
@@ -30,6 +33,24 @@
 
     helium
   ];
+
+  programs = {
+    zen-browser = {
+      enable = true;
+      setAsDefaultBrowser = false;
+      languagePacks = ["de" "en-US"];
+    };
+
+    firefox = {
+      enable = true;
+      languagePacks = ["de" "en-US"];
+      policies = {
+        ShowHomeButton = true;
+        DefaultDownloadDirectory = "${config.home.homeDirectory}/Downloads";
+        DisanleTelemetry = true;
+      };
+    };
+  };
 
   xdg.desktopEntries.discord = {
     name = "Discord";

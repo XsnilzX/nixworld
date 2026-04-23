@@ -12,6 +12,7 @@
     inputs.stylix.nixosModules.stylix
     ./stylix.nix
     ../../profiles/nixos/niri.nix
+    ../../profiles/nixos/laptop.nix
     ../../profiles/nixos/dev.nix
     self.nixosModules.networking-eduroam
     self.nixosModules.networking-luh-vpn

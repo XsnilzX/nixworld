@@ -6,6 +6,8 @@
   imports = [
     self.homeModules.cli-git
     self.homeModules.cli-zsh
+    self.homeModules.cli-starship
+    self.homeModules.cli-zoxide
   ];
 
   home.packages = with pkgs; [
