@@ -22,12 +22,30 @@ Dieses Repository ist ein bewusst schlankes Grundgeruest fuer ein Multi-Host-Nix
 ## Neuer Host
 
 1. `hosts/<name>/` anlegen
-2. `meta.nix` mit mindestens `system` und optional `username` anlegen
+2. `meta.nix` mit mindestens `system` und optional `username` und `nixpkgsChannel` anlegen
 3. `hardware-configuration.nix` durch eine echte Datei aus `nixos-generate-config` ersetzen
 4. `disko.nix` ergaenzen oder leer lassen, bis ein Disk-Layout benoetigt wird
 5. passendes Profil in `hosts/<name>/default.nix` importieren
 6. `secrets/<name>.yaml` anlegen und in `.sops.yaml` aufnehmen
 7. Kein Eintrag in `flake.nix` notwendig, Hosts werden automatisch erkannt
+
+## Nixpkgs-Kanal pro Host
+
+Hosts nutzen standardmaessig `unstable`. Ein Host kann in `hosts/<name>/meta.nix`
+auf den stable-Kanal wechseln:
+
+```nix
+{
+  system = "x86_64-linux";
+  username = "xsnilzx";
+  nixpkgsChannel = "stable"; # oder "unstable"; default: "unstable"
+}
+```
+
+- `nixpkgsChannel` wechselt den primaeren `pkgs`-Satz des Hosts.
+- Erlaubte Werte sind `"stable"` und `"unstable"`.
+- `system.stateVersion` und `home.stateVersion` bleiben davon unberuehrt.
+- Es gibt absichtlich keinen zweiten Paketkanal fuer einzelne Pakete.
 
 ## Dev Shell
 

@@ -2,12 +2,20 @@
   description = "My own Nixworld systems";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.follows = "nixpkgs-unstable";
+
     flake-parts.url = "github:hercules-ci/flake-parts";
 
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    home-manager-stable = {
+      url = "github:nix-community/home-manager/release-25.11";
+      inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
     niri = {
@@ -40,41 +48,40 @@
     self,
     flake-parts,
     ...
-  }:
-    let
-      localLib = import ./lib {
-        inherit inputs self;
-      };
-    in
-      flake-parts.lib.mkFlake { inherit inputs; } {
-        systems = [ "x86_64-linux" ];
+  }: let
+    localLib = import ./lib {
+      inherit inputs self;
+    };
+  in
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = ["x86_64-linux"];
 
-        flake = {
-          lib = localLib;
-          nixosConfigurations = localLib.discoverHosts {
-            hostsDir = ./hosts;
-          };
+      flake = {
+        lib = localLib;
+        nixosConfigurations = localLib.discoverHosts {
+          hostsDir = ./hosts;
         };
+      };
 
-        perSystem = { pkgs, ... }: {
-          devShells = rec {
-            default = repo;
+      perSystem = {pkgs, ...}: {
+        devShells = rec {
+          default = repo;
 
-            repo = pkgs.mkShell {
-              packages = with pkgs; [
-                age
-                alejandra
-                deadnix
-                jq
-                nh
-                nix
-                sops
-                ssh-to-age
-                statix
-                codex
-              ];
-            };
+          repo = pkgs.mkShell {
+            packages = with pkgs; [
+              age
+              alejandra
+              deadnix
+              jq
+              nh
+              nix
+              sops
+              ssh-to-age
+              statix
+              codex
+            ];
           };
         };
       };
+    };
 }

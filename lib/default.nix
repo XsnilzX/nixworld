@@ -2,7 +2,7 @@
   inputs,
   self,
 }: let
-  nixpkgsLib = inputs.nixpkgs.lib;
+  nixpkgsLib = inputs.nixpkgs-unstable.lib;
   mkHost = import ./mkHost.nix {inherit inputs self;};
   discoverHostSshKeys = import ./discoverHostSshKeys.nix {lib = nixpkgsLib;};
 in {
