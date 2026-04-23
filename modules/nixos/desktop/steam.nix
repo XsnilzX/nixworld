@@ -2,6 +2,7 @@
   flake.nixosModules.desktop-steam = {pkgs, ...}: {
     programs = {
       gamemode.enable = true;
+      gamescope.enable = true;
 
       steam = {
         enable = true;

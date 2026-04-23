@@ -6,6 +6,7 @@
   imports = [
     self.homeModules.desktop-audio
     self.homeModules.desktop-email
+    self.homeModules.desktop-gaming
     self.homeModules.desktop-ghostty
     self.homeModules.desktop-images
     self.homeModules.desktop-pdf
@@ -21,15 +22,21 @@
     qbittorrent
     geogebra6
 
-    mullvad-vpn
     proton-vpn
 
     element-desktop
     discord
     mumble
 
-    prismlauncher
-    lunar-client
     helium
   ];
+
+  xdg.desktopEntries.discord = {
+    name = "Discord";
+    genericName = "All-in-one voice and text chat";
+    exec = "discord --ozone-platform=wayland";
+    icon = "discord";
+    type = "Application";
+    categories = ["Network" "InstantMessaging"];
+  };
 }

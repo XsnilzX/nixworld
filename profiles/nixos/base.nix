@@ -4,6 +4,7 @@
   ...
 }: {
   imports = [
+    self.nixosModules.base-graphics
     self.nixosModules.base-locale
     self.nixosModules.base-nix-settings
     self.nixosModules.base-openssh
@@ -11,6 +12,7 @@
   ];
 
   networking.firewall.enable = true;
+  networking.networkmanager.enable = true;
   system.stateVersion = "25.05";
 
   environment.systemPackages = with pkgs; [
