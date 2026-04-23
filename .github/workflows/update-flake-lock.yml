@@ -19,6 +19,25 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Fetch main and dev
+        run: git fetch origin main dev
+
+      - name: Verify dev and main are synchronized
+        run: |
+          read -r main_only dev_only <<EOF
+          $(git rev-list --left-right --count origin/main...origin/dev)
+          EOF
+
+          if [ "$main_only" -ne 0 ] || [ "$dev_only" -ne 0 ]; then
+            echo "dev and main must be synchronized before the automated flake.lock update can run."
+            echo "origin/main..origin/dev: $dev_only commit(s)"
+            echo "origin/dev..origin/main: $main_only commit(s)"
+            exit 1
+          fi
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
@@ -29,6 +48,7 @@ jobs:
         run: nix flake update
 
       - name: Create pull request
+        id: create_pull_request
         uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "chore: update flake.lock"
@@ -36,9 +56,19 @@ jobs:
           body: |
             Automated update of `flake.lock`.
 
-            This PR was created by GitHub Actions.
+            Source branch: `dev`
+            Target branch: `main`
+
+            This PR was created by GitHub Actions and is configured for squash auto-merge after required checks pass.
+          base: main
           branch: automation/update-flake-lock
           delete-branch: true
           labels: |
             dependencies
             automation
+
+      - name: Enable auto-merge
+        if: steps.create_pull_request.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge --auto --squash "${{ steps.create_pull_request.outputs.pull-request-number }}"
