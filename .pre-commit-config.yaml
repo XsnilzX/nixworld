@@ -1,0 +1,30 @@
+repos:
+  - repo: local
+    hooks:
+      - id: nix-flake-check
+        name: nix flake check
+        entry: nix flake check
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+
+      - id: alejandra
+        name: alejandra check
+        entry: alejandra --check .
+        language: system
+        pass_filenames: false
+        stages: [pre-commit, pre-push]
+
+      - id: statix
+        name: statix check
+        entry: statix check .
+        language: system
+        pass_filenames: false
+        stages: [pre-commit, pre-push]
+
+      - id: deadnix
+        name: deadnix check
+        entry: deadnix .
+        language: system
+        pass_filenames: false
+        stages: [pre-commit, pre-push]

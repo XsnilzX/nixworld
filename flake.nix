@@ -86,9 +86,11 @@
               age
               alejandra
               deadnix
+              git
               jq
               nh
               nix
+              pre-commit
               sops
               ssh-to-age
               statix

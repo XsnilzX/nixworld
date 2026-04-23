@@ -1,0 +1,44 @@
+name: update-flake-lock
+
+on:
+  schedule:
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update flake.lock
+        run: nix flake update
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: "chore: update flake.lock"
+          title: "chore: update flake.lock"
+          body: |
+            Automated update of `flake.lock`.
+
+            This PR was created by GitHub Actions.
+          branch: automation/update-flake-lock
+          delete-branch: true
+          labels: |
+            dependencies
+            automation
