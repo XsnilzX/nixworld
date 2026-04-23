@@ -1,6 +1,7 @@
 {
   inputs,
   pkgs,
+  self,
   ...
 }: {
   imports = [
@@ -12,6 +13,8 @@
     ./stylix.nix
     ../../profiles/nixos/niri.nix
     ../../profiles/nixos/dev.nix
+    self.nixosModules.networking-eduroam
+    self.nixosModules.networking-luh-vpn
   ];
 
   boot = {

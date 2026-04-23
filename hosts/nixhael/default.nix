@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  self,
+  ...
+}: {
   imports = [
     ../common
     ./hardware-configuration.nix
@@ -6,6 +10,7 @@
     ./ssh.nix
     ../../profiles/nixos/desktop.nix
     ../../profiles/nixos/dev.nix
+    self.nixosModules.networking-luh-vpn
   ];
 
   boot = {
