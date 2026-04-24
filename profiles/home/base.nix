@@ -8,6 +8,8 @@
     self.homeModules.cli-zsh
     self.homeModules.cli-starship
     self.homeModules.cli-zoxide
+    self.homeModules.cli-eza
+    self.homeModules.cli-fzf
   ];
 
   home.packages = with pkgs; [
