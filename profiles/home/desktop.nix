@@ -1,22 +1,27 @@
 {
   inputs,
+  lib,
   pkgs,
   config,
+  hostname,
   self,
   ...
 }: {
-  imports = [
-    inputs.zen-browser.homeModules.beta
-    self.homeModules.desktop-audio
-    self.homeModules.desktop-email
-    self.homeModules.desktop-gaming
-    self.homeModules.desktop-ghostty
-    self.homeModules.desktop-images
-    self.homeModules.desktop-pdf
-    self.homeModules.desktop-recording
-    self.homeModules.desktop-video
-    self.homeModules.desktop-writing
-  ];
+  imports =
+    [
+      inputs.zen-browser.homeModules.beta
+      self.homeModules.desktop-audio
+      self.homeModules.desktop-email
+      self.homeModules.desktop-ghostty
+      self.homeModules.desktop-images
+      self.homeModules.desktop-pdf
+      self.homeModules.desktop-recording
+      self.homeModules.desktop-video
+      self.homeModules.desktop-writing
+    ]
+    ++ lib.optionals (hostname == "nixhael") [
+      self.homeModules.desktop-gaming
+    ];
 
   home.packages = with pkgs; [
     amdgpu_top
@@ -43,11 +48,19 @@
 
     firefox = {
       enable = true;
-      languagePacks = ["de" "en-US"];
+      languagePacks = ["de"];
       policies = {
         ShowHomeButton = true;
         DefaultDownloadDirectory = "${config.home.homeDirectory}/Downloads";
-        DisanleTelemetry = true;
+        DisableTelemetry = true;
+        ExtensionSettings = {
+          "Bitwarden" = {
+            default_area = "menupanel";
+            install_url = "https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi";
+            installation_mode = "force_installed";
+            private_browsing = true;
+          };
+        };
       };
     };
   };

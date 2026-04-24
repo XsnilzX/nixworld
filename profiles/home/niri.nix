@@ -7,6 +7,9 @@
   imports = [
     ./desktop.nix
     inputs.niri.homeModules.niri
+    self.homeModules.desktop-anyrun
+    self.homeModules.desktop-niri-config
+    self.homeModules.desktop-wallpaperScript
     self.homeModules.desktop-waybar
     self.homeModules.desktop-swaync
     self.homeModules.desktop-wleave

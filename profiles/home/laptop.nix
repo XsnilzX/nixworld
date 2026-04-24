@@ -9,10 +9,13 @@
 
   home.packages = with pkgs; [
     brightnessctl
-    weatherWidget
     xarchiver
     pavucontrol
     networkmanagerapplet
     blueman
+
+    # extra games
+    lunar-client
+    prismlauncher
   ];
 }
