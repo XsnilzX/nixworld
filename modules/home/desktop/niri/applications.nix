@@ -2,10 +2,11 @@ _: {
   flake.homeModules.desktop-niri-applications = {
     config,
     lib,
+    pkgs,
     ...
   }: {
     _module.args.niriApplications = {
-      browser = lib.getExe config.programs.zen-browser.package;
+      browser = lib.getExe pkgs.helium;
       terminal = lib.getExe config.programs.ghostty.package;
       fileManager = "thunar";
       appLauncher = "anyrun";
