@@ -13,7 +13,9 @@ _: {
         inherit (cfg.settings) height spacing;
 
         modules-left = ["niri/workspaces"];
-        modules-center = ["clock"];
+        modules-center =
+          lib.optionals cfg.modules.weather.enable ["custom/weather"]
+          ++ ["clock"];
         modules-right = [
           "cpu"
           "memory"

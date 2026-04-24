@@ -7,6 +7,7 @@
   imports = [
     ./desktop.nix
     inputs.niri.homeModules.niri
+    inputs.goather.homeManagerModules.default
     self.homeModules.desktop-anyrun
     self.homeModules.desktop-niri-config
     self.homeModules.desktop-wallpaperScript

@@ -111,7 +111,8 @@ _: {
         #backlight,
         #pulseaudio,
         #power-profiles-daemon,
-        #custom-notification {
+        #custom-notification,
+        #custom-weather {
           padding: 0 6px;
         }
 
