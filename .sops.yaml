@@ -4,6 +4,7 @@ keys:
   #- &admin_myuser age1replacewithyouradminpublickeyxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   - &nixhael age1gqzvzd2ewvta5grp3whe2a5tsd463rg6n2l059alrdnq8thcjdrsu07ced
   - &nixspo age1tqaq3s7vzncvp3dr4kefwmltfw40423w6t58f43snmqdfmwjxe0qafsdhw
+  - &homelab age1ahgql6pf0yszr50kt5c8nsvqzh5ssl8ldxmpfpr2nfe2kdw7kdsqvcz36w
   - &backup age1ctrh545yzm2y5v6rmn5adrpmtnqpprqnk6g99pdu7nn7zchw2g6qy0eeqz
 
 creation_rules:
@@ -30,9 +31,18 @@ creation_rules:
           - *nixhael
           - *backup
 
+  - path_regex: secrets/homelab\.yaml$
+    key_groups:
+      - age:
+          #- *admin_myuser
+          - *homelab
+          - *nixspo
+          - *backup
+
   - path_regex: secrets/users/xsnilzx\.yaml$
     key_groups:
       - age:
+          - *homelab
           - *nixhael
           - *nixspo
           - *backup

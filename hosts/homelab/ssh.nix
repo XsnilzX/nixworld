@@ -7,7 +7,11 @@
   homeDirectory = "/home/${username}";
   sshPath = "${homeDirectory}/.ssh";
   secretsFile = ../../secrets + "/${hostname}.yaml";
-  authorizedKeys = [];
+  authorizedKeys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBOVXo+rYVc9q+b3i+Tg2fwDiEOVKVdgg0u8IQL2KxE8"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKU6jZE2Awzx2RPM7YL4Dmc/i4/UXzX+Syo1t+FrF0QI richard@taesler.net"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKSa+GxhVFHnjEHm3A7XTZHADDUA8GundFu4Pqwagkqa xsnilzx@nixhael"
+  ];
   matchBlocks = {};
 in {
   users.users.${username}.openssh.authorizedKeys.keys = authorizedKeys;

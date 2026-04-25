@@ -2,13 +2,14 @@
 
 ## Ziel
 
-Dieses Repository ist ein schlankes Grundgeruest fuer ein Multi-Host-NixOS-Setup mit Home Manager, `flake-parts`, Host-Auto-Discovery und vorbereiteter `sops-nix`-Integration.
+Dieses Repository ist ein schlankes Grundgeruest fuer ein Multi-Host-NixOS-Setup mit Home Manager, `flake-parts`, Host-Auto-Discovery, vorbereiteter `sops-nix`-Integration und wiederverwendbaren Server-Modulen fuer Hosts wie `homelab`.
 
 ## Struktur
 
 - `hosts/`: duenne Host-Entry-Points mit Hostname, Host-Metadaten, Host-Secrets, Hardware und Profilen
 - `modules/`: kleine wiederverwendbare NixOS- und Home-Manager-Module
 - `profiles/`: einfache Kombinationen aus Modulen fuer Basis-, Desktop-, Laptop-, Server- und Dev-Setups
+- `profiles/nixos/homelab-server.nix`: gebuendeltes Serverprofil fuer den migrierten `homelab`-Host
 - `users/`: Benutzerdefinitionen und Home-Manager-Einstieg
 - `secrets/`: verschluesselte SOPS-Dateien pro Host, gemeinsam und pro User
 - `lib/`: `mkHost`- und Host-Discovery-Helper fuer Flake-Outputs

@@ -24,6 +24,8 @@ in {
       extraGroups = [
         "networkmanager"
         "wheel"
+        "docker"
+        "jellyfin"
       ];
       shell = pkgs.zsh;
     }
