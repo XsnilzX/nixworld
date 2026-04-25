@@ -280,11 +280,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1777040247,
-        "narHash": "sha256-9/AxYNragTPqW9xe82nndEYBbJ0LuL1UrFz8aUsG4vY=",
+        "lastModified": 1777110728,
+        "narHash": "sha256-Vjl3UQa7S7KE4VyXQVToMzAg67PUvwismNQTfaphhx0=",
         "owner": "XsnilzX",
         "repo": "goather",
-        "rev": "c018c3b380426b1d4868075b4d822aef0f976405",
+        "rev": "af87194d559e1d97182ee96b1cd04fddaae0928d",
         "type": "github"
       },
       "original": {
