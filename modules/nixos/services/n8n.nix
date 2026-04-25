@@ -65,36 +65,38 @@ _: {
         };
       };
 
-      systemd.services = {
-        postgresql-n8n-password = {
-          description = "Set n8n PostgreSQL password";
-          after = ["postgresql.service" "postgresql-setup.service"];
-          requires = ["postgresql.service" "postgresql-setup.service"];
-          wantedBy = ["multi-user.target"];
+      systemd = {
+        services = {
+          postgresql-n8n-password = {
+            description = "Set n8n PostgreSQL password";
+            after = ["postgresql.service" "postgresql-setup.service"];
+            requires = ["postgresql.service" "postgresql-setup.service"];
+            wantedBy = ["multi-user.target"];
 
-          serviceConfig = {
-            Type = "oneshot";
-            RemainAfterExit = true;
-            User = "postgres";
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+              User = "postgres";
+            };
+
+            script = ''
+              DB_PASSWORD=$(cat ${config.sops.secrets.${cfg.dbPasswordSecret}.path})
+              ${pkgs.postgresql}/bin/psql -c "ALTER USER n8n WITH PASSWORD '$DB_PASSWORD';"
+            '';
           };
 
-          script = ''
-            DB_PASSWORD=$(cat ${config.sops.secrets.${cfg.dbPasswordSecret}.path})
-            ${pkgs.postgresql}/bin/psql -c "ALTER USER n8n WITH PASSWORD '$DB_PASSWORD';"
-          '';
-        };
-
-        n8n = {
-          after = ["postgresql-n8n-password.service"];
-          requires = ["postgresql-n8n-password.service"];
-          environment = {
-            N8N_USER_FOLDER = lib.mkForce "/services/n8n/data";
-          };
-          serviceConfig = {
-            EnvironmentFile = [config.sops.secrets.${cfg.envSecret}.path];
-            User = "n8n";
-            Group = "n8n";
-            ReadWritePaths = ["/services/n8n/data"];
+          n8n = {
+            after = ["postgresql-n8n-password.service"];
+            requires = ["postgresql-n8n-password.service"];
+            environment = {
+              N8N_USER_FOLDER = lib.mkForce "/services/n8n/data";
+            };
+            serviceConfig = {
+              EnvironmentFile = [config.sops.secrets.${cfg.envSecret}.path];
+              User = "n8n";
+              Group = "n8n";
+              ReadWritePaths = ["/services/n8n/data"];
+            };
           };
         };
 
