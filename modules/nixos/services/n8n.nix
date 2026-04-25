@@ -84,7 +84,7 @@ _: {
           '';
         };
 
-        services.n8n = {
+        n8n = {
           after = ["postgresql-n8n-password.service"];
           requires = ["postgresql-n8n-password.service"];
           environment = {
