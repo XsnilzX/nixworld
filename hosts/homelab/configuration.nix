@@ -24,8 +24,6 @@
     ];
   };
 
-  services.crowdsec.enable = true;
-
   sops.secrets = {
     hetznerDnsEnv = {
       sopsFile = ../../secrets/homelab.yaml;
@@ -217,6 +215,11 @@
         port = 22;
       }
     ];
+
+    monitoringStack = {
+      enable = true;
+      caddy.enable = true;
+    };
 
     homelabCrowdsec = {
       enableFirewallRules = true;
