@@ -1,7 +1,16 @@
-{pkgs, ...}: {
+{
+  hostname,
+  lib,
+  pkgs,
+  ...
+}: {
   home = {
     username = "friedrich";
-    homeDirectory = "/home/friedrich";
+    homeDirectory = lib.mkForce (
+      if hostname == "home34b"
+      then "/mnt/BigData/data/homes/friedrich"
+      else "/home/friedrich"
+    );
     stateVersion = "25.11";
   };
 
