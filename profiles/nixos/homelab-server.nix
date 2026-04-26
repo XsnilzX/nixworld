@@ -22,6 +22,7 @@
     alejandra
     btop
     docker-compose
+    ghostty.terminfo
     helix
     sanoid
     sops
