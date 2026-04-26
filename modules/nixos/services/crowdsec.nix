@@ -69,7 +69,13 @@ _: {
         "kernel.dmesg_restrict" = 1;
       };
 
-      users.users.crowdsec.extraGroups = lib.mkIf config.services.crowdsec.enable ["caddy"];
+      users.users.crowdsec = lib.mkIf config.services.crowdsec.enable {
+        isSystemUser = true;
+        group = "crowdsec";
+        extraGroups = ["caddy"];
+      };
+
+      users.groups.crowdsec = lib.mkIf config.services.crowdsec.enable {};
 
       systemd.tmpfiles.rules = lib.mkIf config.services.crowdsec.enable [
         "d /var/lib/crowdsec 0755 crowdsec crowdsec - -"

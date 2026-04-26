@@ -39,6 +39,14 @@ creation_rules:
           - *nixspo
           - *backup
 
+  - path_regex: secrets/home34b\.yaml$
+    key_groups:
+      - age:
+          #- *admin_myuser
+          - *nixspo
+          - *nixhael
+          - *backup
+
   - path_regex: secrets/users/xsnilzx\.yaml$
     key_groups:
       - age:

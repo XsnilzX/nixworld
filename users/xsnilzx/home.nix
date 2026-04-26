@@ -26,7 +26,11 @@
 
   home = {
     inherit username;
-    homeDirectory = "/home/${username}";
+    homeDirectory = lib.mkForce (
+      if hostname == "home34b"
+      then "/mnt/BigData/data/homes/${username}"
+      else "/home/${username}"
+    );
     stateVersion = "25.11";
   };
 }

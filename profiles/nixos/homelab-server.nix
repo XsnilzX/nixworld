@@ -13,6 +13,8 @@
     self.nixosModules.services-hetzner-dns-update
     self.nixosModules.services-backup-zfs
     self.nixosModules.services-zfs-extra
+    self.nixosModules.services-monitoring
+    self.nixosModules.services-samba
   ];
 
   environment.systemPackages = with pkgs; [
