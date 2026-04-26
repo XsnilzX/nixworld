@@ -41,11 +41,9 @@
       mode = "0400";
     };
 
-    n8nEnv = {
+    n8nEncryptionKey = {
       sopsFile = ../../secrets/homelab.yaml;
-      key = "n8n/env";
-      owner = "n8n";
-      group = "n8n";
+      key = "n8n/encryption_key";
       mode = "0400";
     };
 
@@ -75,7 +73,7 @@
 
     homelabN8n = {
       enable = true;
-      envSecret = "n8nEnv";
+      encryptionKeySecret = "n8nEncryptionKey";
       dbPasswordSecret = "n8nDbPassword";
     };
 

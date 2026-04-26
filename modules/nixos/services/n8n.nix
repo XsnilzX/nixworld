@@ -10,10 +10,10 @@ _: {
     options.services.homelabN8n = {
       enable = lib.mkEnableOption "homelab n8n service wiring";
 
-      envSecret = lib.mkOption {
+      encryptionKeySecret = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = null;
-        description = "Name of the SOPS secret containing the n8n environment file.";
+        description = "Name of the SOPS secret containing the n8n encryption key.";
       };
 
       dbPasswordSecret = lib.mkOption {
@@ -26,8 +26,8 @@ _: {
     config = lib.mkIf cfg.enable {
       assertions = [
         {
-          assertion = cfg.envSecret != null && cfg.dbPasswordSecret != null;
-          message = "services.homelabN8n requires both envSecret and dbPasswordSecret to be set.";
+          assertion = cfg.encryptionKeySecret != null && cfg.dbPasswordSecret != null;
+          message = "services.homelabN8n requires both encryptionKeySecret and dbPasswordSecret to be set.";
         }
       ];
 
@@ -53,6 +53,13 @@ _: {
       services.n8n = {
         enable = true;
         environment = {
+          DB_TYPE = "postgresdb";
+          DB_POSTGRESDB_HOST = "127.0.0.1";
+          DB_POSTGRESDB_PORT = "5432";
+          DB_POSTGRESDB_DATABASE = "n8n";
+          DB_POSTGRESDB_USER = "n8n";
+          DB_POSTGRESDB_PASSWORD_FILE = "%d/db_postgresdb_password_file";
+          N8N_ENCRYPTION_KEY_FILE = "%d/n8n_encryption_key_file";
           N8N_HOST = "0.0.0.0";
           N8N_PORT = "5678";
           N8N_PROTOCOL = "https";
@@ -92,7 +99,10 @@ _: {
               N8N_USER_FOLDER = lib.mkForce "/services/n8n/data";
             };
             serviceConfig = {
-              EnvironmentFile = [config.sops.secrets.${cfg.envSecret}.path];
+              LoadCredential = [
+                "db_postgresdb_password_file:${config.sops.secrets.${cfg.dbPasswordSecret}.path}"
+                "n8n_encryption_key_file:${config.sops.secrets.${cfg.encryptionKeySecret}.path}"
+              ];
               User = "n8n";
               Group = "n8n";
               ReadWritePaths = ["/services/n8n/data"];

@@ -31,16 +31,15 @@ hetzner_dns:
 crowdsec:
   caddy_api_key: ...
 n8n:
-  env: |
-    N8N_ENCRYPTION_KEY=...
-    DB_POSTGRESDB_PASSWORD=...
+  encryption_key: ...
   db_password: ...
 ```
 
 - `ssh_keys` folgt weiter dem bestehenden Host-SSH-Schema und wird von `mkHostSshSecrets` ausgewertet.
 - `hetzner_dns.env` wird als Environment-File fuer den Hetzner-DNS-Updater materialisiert.
 - `crowdsec.caddy_api_key` wird in ein Caddy-Environment-File templated.
-- `n8n.env` ist ein mehrzeiliges Environment-File, `n8n.db_password` ein einzelnes Secret fuer PostgreSQL.
+- `n8n.encryption_key` ist der rohe n8n-Encryption-Key.
+- `n8n.db_password` ist das rohe PostgreSQL-Passwort fuer den n8n-User.
 
 ## Eduroam
 
