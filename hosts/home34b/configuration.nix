@@ -138,7 +138,11 @@
 
     monitoringStack = {
       enable = true;
-      caddy.enable = true;
+      caddy = {
+        enable = true;
+        grafanaSite = "grafana.${domain}";
+        prometheusSite = "prometheus.${domain}";
+      };
     };
 
     sambaShareStack.enable = true;

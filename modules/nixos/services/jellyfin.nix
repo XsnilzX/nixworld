@@ -1,12 +1,39 @@
 _: {
   flake.nixosModules.services-jellyfin = {
     config,
+    domain ? null,
     lib,
     pkgs,
     hostname,
-    domain ? null,
     ...
-  }: {
+  }: let
+    securityHeaders = ''
+      encode zstd gzip
+
+      tls {
+        protocols tls1.2 tls1.3
+      }
+
+      rate_limit {
+        zone global {
+          key {remote_host}:{host}
+          events 600
+          window 1m
+        }
+      }
+
+      header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        -Server
+      }
+
+      crowdsec
+    '';
+  in {
     config = lib.mkIf config.services.jellyfin.enable {
       users.users.jellyfin.extraGroups = [
         "video"
@@ -34,6 +61,15 @@ _: {
         requires = ["zfs-mount.service"];
         environment = lib.mkIf (domain != null) {
           JELLYFIN_PublishedServerUrl = "https://jellyfin.${domain}";
+        };
+      };
+
+      services.caddy.virtualHosts = lib.mkIf (config.services.caddy.enable && domain != null) {
+        "jellyfin.${domain}" = {
+          extraConfig = ''
+            ${securityHeaders}
+            reverse_proxy localhost:8096
+          '';
         };
       };
 

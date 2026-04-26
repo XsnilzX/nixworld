@@ -6,6 +6,10 @@ _: {
     ...
   }: let
     cfg = config.services.caddy;
+    caddyPlugins = [
+      "github.com/mholt/caddy-ratelimit@v0.1.0"
+      "github.com/hslatman/caddy-crowdsec-bouncer@v0.10.0"
+    ];
   in {
     options.services.caddy.enableCrowdsec = lib.mkOption {
       type = lib.types.bool;
@@ -21,12 +25,9 @@ _: {
         };
       }
       (lib.mkIf cfg.enable {
-        services.caddy = lib.mkIf cfg.enableCrowdsec {
+        services.caddy = {
           package = pkgs.caddy.withPlugins {
-            plugins = [
-              "github.com/mholt/caddy-ratelimit@v0.1.0"
-              "github.com/hslatman/caddy-crowdsec-bouncer@v0.10.0"
-            ];
+            plugins = caddyPlugins;
             hash = "sha256-MO6O97pjdOEPDUrJ/rTR4dmFldlaewjFtuujYQNluNY=";
           };
         };

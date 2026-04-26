@@ -9,6 +9,8 @@ _: {
     sshDropRules = lib.optional cfg.dropOtherSsh "iptables -A INPUT -p tcp --dport 22 -j DROP";
   in {
     options.services.homelabCrowdsec = {
+      enable = lib.mkEnableOption "homelab CrowdSec stack";
+
       enableFirewallRules = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -30,8 +32,8 @@ _: {
 
     config = {
       services = {
-        crowdsec = {
-          enable = lib.mkDefault false;
+        crowdsec = lib.mkIf cfg.enable {
+          enable = true;
           settings.general.api.server = {
             enable = true;
             listen_uri = "127.0.0.1:8080";
@@ -54,7 +56,7 @@ _: {
           ];
         };
 
-        "crowdsec-firewall-bouncer".enable = lib.mkDefault config.services.crowdsec.enable;
+        "crowdsec-firewall-bouncer".enable = lib.mkIf cfg.enable (lib.mkDefault config.services.crowdsec.enable);
       };
 
       networking.firewall.extraCommands = lib.mkIf (cfg.enableFirewallRules && cfg.sshAllowedCidrs != []) (

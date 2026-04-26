@@ -149,7 +149,6 @@
         "wopiserver.${domain}" = mkProxy "10.0.20.8:9300";
         "ai.${domain}" = mkProxy "10.0.20.8:8080";
         "vw.${domain}" = mkProxy "10.0.20.8:11001";
-        "jellyfin.${domain}" = mkProxy "localhost:8096";
         "n8n.${domain}" = mkProxy "localhost:5678";
       };
     };
@@ -218,10 +217,15 @@
 
     monitoringStack = {
       enable = true;
-      caddy.enable = true;
+      caddy = {
+        enable = true;
+        grafanaSite = "grafana.${domain}";
+        prometheusSite = "prometheus.${domain}";
+      };
     };
 
     homelabCrowdsec = {
+      enable = true;
       enableFirewallRules = true;
       sshAllowedCidrs = [
         "10.0.10.0/24"
@@ -231,6 +235,8 @@
       ];
       dropOtherSsh = true;
     };
+
+    matrix-tuwunel.enable = true;
   };
 
   system.stateVersion = lib.mkForce "25.11";
