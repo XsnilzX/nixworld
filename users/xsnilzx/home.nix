@@ -8,6 +8,8 @@
   imports =
     [
       ../../profiles/home/base.nix
+    ]
+    ++ lib.optionals (hostname != "homelab") [
       ../../profiles/home/dev.nix
     ]
     ++ lib.optionals (hostname == "nixspo") [
@@ -19,17 +21,7 @@
       ../../profiles/home/desktop.nix
     ]
     ++ lib.optionals (hostname == "homelab") [
-      {
-        home.packages = with pkgs; [
-          nh
-        ];
-
-        programs.zsh.shellAliases = {
-          dcd = "docker compose down";
-          dcp = "docker compose pull";
-          dcu = "docker compose up -d";
-        };
-      }
+      ../../profiles/home/server.nix
     ];
 
   home = {
