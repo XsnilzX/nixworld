@@ -26,19 +26,6 @@ jobs:
       - name: Fetch main and dev
         run: git fetch origin main dev
 
-      - name: Verify dev and main are synchronized
-        run: |
-          read -r main_only dev_only <<EOF
-          $(git rev-list --left-right --count origin/main...origin/dev)
-          EOF
-
-          if [ "$main_only" -ne 0 ] || [ "$dev_only" -ne 0 ]; then
-            echo "dev and main must be synchronized before the automated flake.lock update can run."
-            echo "origin/main..origin/dev: $dev_only commit(s)"
-            echo "origin/dev..origin/main: $main_only commit(s)"
-            exit 1
-          fi
-
       - name: Install Nix
         uses: cachix/install-nix-action@v31
         with:
@@ -47,28 +34,71 @@ jobs:
       - name: Update flake.lock
         run: nix flake update
 
-      - name: Create pull request
-        id: create_pull_request
-        uses: peter-evans/create-pull-request@v8
-        with:
-          commit-message: "chore: update flake.lock"
-          title: "chore: update flake.lock"
-          body: |
-            Automated update of `flake.lock`.
+      - name: Detect flake.lock changes
+        id: flake_lock_changes
+        run: |
+          if git diff --quiet -- flake.lock; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
 
-            Source branch: `dev`
-            Target branch: `main`
+      - name: Commit and push flake.lock to dev
+        if: steps.flake_lock_changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add flake.lock
+          git commit -m "chore: update flake.lock"
+          git push origin HEAD:dev
 
-            This PR was created by GitHub Actions and is configured for squash auto-merge after required checks pass.
-          base: main
-          branch: automation/update-flake-lock
-          delete-branch: true
-          labels: |
-            dependencies
-            automation
-
-      - name: Enable auto-merge
-        if: steps.create_pull_request.outputs.pull-request-number != ''
+      - name: Create or update dev to main pull request
+        id: dev_to_main_pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge --auto --squash "${{ steps.create_pull_request.outputs.pull-request-number }}"
+        run: |
+          pr_body="$(mktemp)"
+          cat <<'EOF' > "$pr_body"
+          Automated update of `flake.lock` on `dev`.
+
+          Source branch: `dev`
+          Target branch: `main`
+
+          This PR was created by GitHub Actions and is configured for squash auto-merge after required checks pass.
+          EOF
+
+          pr_number="$(gh pr list --base main --head dev --state open --json number --jq '.[0].number')"
+
+          if [ -n "$pr_number" ]; then
+            gh pr edit "$pr_number" \
+              --title "chore: merge dev into main" \
+              --body-file "$pr_body" \
+              --add-label dependencies \
+              --add-label automation
+            echo "pull-request-number=$pr_number" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          dev_ahead_of_main="$(git rev-list --count origin/main..HEAD)"
+          if [ "$dev_ahead_of_main" -eq 0 ]; then
+            echo "No open dev->main PR and no commits to merge."
+            echo "pull-request-number=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          pr_url="$(gh pr create \
+            --base main \
+            --head dev \
+            --title "chore: merge dev into main" \
+            --body-file "$pr_body" \
+            --label dependencies \
+            --label automation)"
+
+          pr_number="$(gh pr view "$pr_url" --json number --jq '.number')"
+          echo "pull-request-number=$pr_number" >> "$GITHUB_OUTPUT"
+
+      - name: Enable auto-merge
+        if: steps.dev_to_main_pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge --auto --squash "${{ steps.dev_to_main_pr.outputs.pull-request-number }}"
