@@ -24,45 +24,52 @@
     ];
   };
 
-  sops.secrets = {
-    hetznerDnsEnv = {
-      sopsFile = ../../secrets/homelab.yaml;
-      key = "hetzner_dns/env";
-      owner = "hetzner";
-      group = "hetzner";
-      mode = "0400";
+  sops = {
+    age = {
+      keyFile = lib.mkForce null;
+      sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
     };
 
-    caddyCrowdsecApiKey = {
-      sopsFile = ../../secrets/homelab.yaml;
-      key = "crowdsec/caddy_api_key";
+    secrets = {
+      hetznerDnsEnv = {
+        sopsFile = ../../secrets/homelab.yaml;
+        key = "hetzner_dns/env";
+        owner = "hetzner";
+        group = "hetzner";
+        mode = "0400";
+      };
+
+      caddyCrowdsecApiKey = {
+        sopsFile = ../../secrets/homelab.yaml;
+        key = "crowdsec/caddy_api_key";
+        owner = "caddy";
+        group = "caddy";
+        mode = "0400";
+      };
+
+      n8nEncryptionKey = {
+        sopsFile = ../../secrets/homelab.yaml;
+        key = "n8n/encryption_key";
+        mode = "0400";
+      };
+
+      n8nDbPassword = {
+        sopsFile = ../../secrets/homelab.yaml;
+        key = "n8n/db_password";
+        owner = "postgres";
+        group = "postgres";
+        mode = "0400";
+      };
+    };
+
+    templates.caddyCrowdsecEnv = {
+      content = ''
+        CROWDSEC_API_KEY=${config.sops.placeholder.caddyCrowdsecApiKey}
+      '';
       owner = "caddy";
       group = "caddy";
       mode = "0400";
     };
-
-    n8nEncryptionKey = {
-      sopsFile = ../../secrets/homelab.yaml;
-      key = "n8n/encryption_key";
-      mode = "0400";
-    };
-
-    n8nDbPassword = {
-      sopsFile = ../../secrets/homelab.yaml;
-      key = "n8n/db_password";
-      owner = "postgres";
-      group = "postgres";
-      mode = "0400";
-    };
-  };
-
-  sops.templates.caddyCrowdsecEnv = {
-    content = ''
-      CROWDSEC_API_KEY=${config.sops.placeholder.caddyCrowdsecApiKey}
-    '';
-    owner = "caddy";
-    group = "caddy";
-    mode = "0400";
   };
 
   services = {
