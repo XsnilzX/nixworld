@@ -3,6 +3,6 @@
   username = "xsnilzx";
   nixpkgsChannel = "stable";
   specialArgs = {
-    domain = "oelfatzen.de";
+    domain = "home-taesler.de";
   };
 }

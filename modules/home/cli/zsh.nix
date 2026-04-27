@@ -56,6 +56,11 @@ _: {
           gco = "git checkout";
           gsw = "git switch";
 
+          # Docker
+          dcd = "docker compose down";
+          dcp = "docker compose pull";
+          dcu = "docker compose up -d";
+
           # System
           rebuild = "sudo nixos-rebuild switch --flake .";
           code = "codium";

@@ -11,7 +11,7 @@
 ## Neuer Host
 
 1. `hosts/<name>/` anlegen
-2. `meta.nix` mit mindestens `system` und optional `username` und `nixpkgsChannel` anlegen
+2. `meta.nix` mit mindestens `system` und optional `username`, `nixpkgsChannel` und `specialArgs` anlegen
 3. `hardware-configuration.nix` durch eine echte Datei aus `nixos-generate-config` ersetzen
 4. `disko.nix` ergaenzen oder leer lassen, bis ein Disk-Layout benoetigt wird
 5. Passendes Profil in `hosts/<name>/default.nix` importieren
@@ -27,10 +27,14 @@ Hosts nutzen standardmaessig `unstable`. Ein Host kann in `hosts/<name>/meta.nix
   system = "x86_64-linux";
   username = "xsnilzx";
   nixpkgsChannel = "stable"; # oder "unstable"; default: "unstable"
+  specialArgs = {
+    domain = "example.org";
+  };
 }
 ```
 
 - `nixpkgsChannel` wechselt den primaeren `pkgs`-Satz des Hosts.
 - Erlaubte Werte sind `"stable"` und `"unstable"`.
+- `specialArgs` werden zusaetzlich an NixOS- und Home-Manager-Module des Hosts durchgereicht.
 - `system.stateVersion` und `home.stateVersion` bleiben davon unberuehrt.
 - Es gibt absichtlich keinen zweiten Paketkanal fuer einzelne Pakete.

@@ -48,6 +48,11 @@
           then {inherit (meta) nixpkgsChannel;}
           else {}
         )
+        // (
+          if meta ? specialArgs
+          then {inherit (meta) specialArgs;}
+          else {}
+        )
       );
     };
 in

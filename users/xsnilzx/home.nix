@@ -1,12 +1,15 @@
 {
   hostname,
   lib,
+  pkgs,
   username ? "xsnilzx",
   ...
 }: {
   imports =
     [
       ../../profiles/home/base.nix
+    ]
+    ++ lib.optionals (hostname != "homelab") [
       ../../profiles/home/dev.nix
     ]
     ++ lib.optionals (hostname == "nixspo") [
@@ -16,11 +19,18 @@
     ]
     ++ lib.optionals (hostname == "nixhael") [
       ../../profiles/home/desktop.nix
+    ]
+    ++ lib.optionals (hostname == "homelab") [
+      ../../profiles/home/server.nix
     ];
 
   home = {
     inherit username;
-    homeDirectory = "/home/${username}";
+    homeDirectory = lib.mkForce (
+      if hostname == "home34b"
+      then "/mnt/BigData/data/homes/${username}"
+      else "/home/${username}"
+    );
     stateVersion = "25.11";
   };
 }

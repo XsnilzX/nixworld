@@ -7,8 +7,6 @@ _: {
       age
       sops
 
-      # Coding
-      uv
       stdenv.cc.cc.lib
       python313
     ];

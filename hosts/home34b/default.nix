@@ -6,7 +6,7 @@
     ./ssh.nix
     ./configuration.nix
     ../../profiles/nixos/homelab-server.nix
-    self.nixosModules.services-matrix-tuwunel
+    self.nixosModules.hardware-nvidia-server
   ];
 
   boot.loader = {
@@ -14,5 +14,5 @@
     efi.canTouchEfiVariables = true;
   };
 
-  networking.hostName = "homelab";
+  networking.hostName = "home34b";
 }
