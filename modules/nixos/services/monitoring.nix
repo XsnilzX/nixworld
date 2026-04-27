@@ -4,8 +4,14 @@ _: {
     lib,
     ...
   }: let
-    inherit (lib) mkDefault mkEnableOption mkIf mkMerge mkOption optionals types;
+    inherit (lib) hasInfix mkDefault mkEnableOption mkIf mkMerge mkOption optionalString optionals types;
     cfg = config.services.monitoringStack;
+    caddyMetricsCfg = cfg.caddy.metrics;
+    caddyMetricsEnabled = cfg.caddy.enable && caddyMetricsCfg.enable;
+    mkPrometheusTarget = address: port:
+      if hasInfix ":" address
+      then "[${address}]:${toString port}"
+      else "${address}:${toString port}";
   in {
     options.services.monitoringStack = {
       enable = mkEnableOption "Prometheus, Grafana and Node Exporter stack";
@@ -96,6 +102,26 @@ _: {
           default = "http://prometheus";
           description = "Caddy site label used for Prometheus.";
         };
+
+        metrics = {
+          enable = mkOption {
+            type = types.bool;
+            default = true;
+            description = "Expose local Caddy metrics for Prometheus scraping.";
+          };
+
+          listenAddress = mkOption {
+            type = types.str;
+            default = "127.0.0.1";
+            description = "Address the local Caddy metrics endpoint should bind to.";
+          };
+
+          port = mkOption {
+            type = types.port;
+            default = 2019;
+            description = "TCP port used by the local Caddy metrics endpoint.";
+          };
+        };
       };
     };
 
@@ -105,6 +131,14 @@ _: {
           {
             assertion = !cfg.caddy.enable || config.services.caddy.enable;
             message = "services.monitoringStack.caddy.enable requires services.caddy.enable.";
+          }
+          {
+            assertion = !caddyMetricsEnabled || config.services.caddy.enable;
+            message = "services.monitoringStack.caddy.metrics.enable requires services.caddy.enable.";
+          }
+          {
+            assertion = !caddyMetricsEnabled || cfg.prometheus.enable;
+            message = "services.monitoringStack.caddy.metrics.enable requires services.monitoringStack.prometheus.enable.";
           }
         ];
 
@@ -126,6 +160,19 @@ _: {
                     static_configs = [
                       {
                         targets = ["127.0.0.1:${toString cfg.nodeExporter.port}"];
+                      }
+                    ];
+                  }
+                ]
+                ++ optionals caddyMetricsEnabled [
+                  {
+                    job_name = "caddy-local";
+                    metrics_path = "/metrics";
+                    static_configs = [
+                      {
+                        targets = [
+                          (mkPrometheusTarget caddyMetricsCfg.listenAddress caddyMetricsCfg.port)
+                        ];
                       }
                     ];
                   }
@@ -175,22 +222,41 @@ _: {
           nodeExporter.listenAddress = mkDefault "127.0.0.1";
         };
 
-        services.caddy.virtualHosts = mkMerge [
-          (mkIf cfg.grafana.enable {
-            "${cfg.caddy.grafanaSite}" = {
-              extraConfig = ''
-                reverse_proxy 127.0.0.1:${toString cfg.grafana.port}
-              '';
-            };
-          })
-          (mkIf cfg.prometheus.enable {
-            "${cfg.caddy.prometheusSite}" = {
-              extraConfig = ''
-                reverse_proxy 127.0.0.1:${toString cfg.prometheus.port}
-              '';
-            };
-          })
-        ];
+        services.caddy = {
+          globalConfig = optionalString caddyMetricsEnabled ''
+            metrics {
+              per_host
+            }
+          '';
+
+          virtualHosts = mkMerge [
+            (mkIf cfg.grafana.enable {
+              "${cfg.caddy.grafanaSite}" = {
+                extraConfig = ''
+                  reverse_proxy 127.0.0.1:${toString cfg.grafana.port}
+                '';
+              };
+            })
+            (mkIf cfg.prometheus.enable {
+              "${cfg.caddy.prometheusSite}" = {
+                extraConfig = ''
+                  reverse_proxy 127.0.0.1:${toString cfg.prometheus.port}
+                '';
+              };
+            })
+            (mkIf caddyMetricsEnabled {
+              ":${toString caddyMetricsCfg.port}" = {
+                listenAddresses = [caddyMetricsCfg.listenAddress];
+                logFormat = ''
+                  output discard
+                '';
+                extraConfig = ''
+                  metrics /metrics
+                '';
+              };
+            })
+          ];
+        };
       })
     ]);
   };
