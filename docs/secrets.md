@@ -86,20 +86,20 @@ Wenn Harmonia die Artefakte wirklich von `Big-Data` servieren soll, muss das Dat
 
 ```bash
 sudo zfs create \
-  -o mountpoint=/mnt/BigData/nix/store \
+  -o mountpoint=/BigData/nix/store \
   -o compression=zstd \
   -o atime=off \
   -o xattr=sa \
   -o acltype=posixacl \
   -o relatime=on \
   -o recordsize=128K \
-  Big-Data/nix/store
+  Big-Data/nix-cache
 ```
 
 Danach den alternativen Store-Wurzelpfad anlegen, falls noetig:
 
 ```bash
-sudo mkdir -p /mnt/BigData/nix
+sudo mkdir -p /BigData/nix
 ```
 
 Hinweise zu den Optionen:
