@@ -1,6 +1,7 @@
-_: {
+{self, ...}: {
   imports = [
     ./desktop-common.nix
+    self.nixosModules.desktop-niri
   ];
   services = {
     blueman.enable = true;

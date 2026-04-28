@@ -1,10 +1,12 @@
-_: {
+{self, ...}: {
   imports = [
     ../common
     ./hardware-configuration.nix
     ./disko.nix
     ./ssh.nix
-    ../../profiles/nixos/server.nix
+    ./configuration.nix
+    ../../profiles/nixos/homelab-server.nix
+    self.nixosModules.services-matrix-tuwunel
   ];
 
   boot.loader = {

@@ -13,6 +13,33 @@
 - Bearbeitet wird es direkt mit `sops`, zum Beispiel `sops secrets/nixspo.yaml`.
 - Fuer `nixspo` werden aktuell `eduroam` und `luh-vpn` genutzt.
 - Fuer `nixhael` wird aktuell `luh-vpn` genutzt.
+- Fuer `homelab` werden SSH-Keymaterial, Hetzner-DNS, CrowdSec und N8N aus `secrets/homelab.yaml` genutzt.
+
+## Homelab
+
+- `secrets/homelab.yaml` buendelt alle host-spezifischen `homelab`-Secrets.
+- Die Datei enthaelt aktuell diese Schluessel:
+
+```yaml
+ssh_keys: {}
+hetzner_dns:
+  env: |
+    API_TOKEN=...
+    HZN_ZONE=oelfatzen.de
+    HZN_NAME=@
+    HZN_IPV6=1
+crowdsec:
+  caddy_api_key: ...
+n8n:
+  encryption_key: ...
+  db_password: ...
+```
+
+- `ssh_keys` folgt weiter dem bestehenden Host-SSH-Schema und wird von `mkHostSshSecrets` ausgewertet.
+- `hetzner_dns.env` wird als Environment-File fuer den Hetzner-DNS-Updater materialisiert.
+- `crowdsec.caddy_api_key` wird in ein Caddy-Environment-File templated.
+- `n8n.encryption_key` ist der rohe n8n-Encryption-Key.
+- `n8n.db_password` ist das rohe PostgreSQL-Passwort fuer den n8n-User.
 
 ## Eduroam
 

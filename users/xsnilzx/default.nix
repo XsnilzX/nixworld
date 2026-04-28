@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  hostname,
   username ? "xsnilzx",
   ...
 }: let
@@ -21,10 +22,17 @@ in {
     {
       isNormalUser = true;
       description = "Primary user";
-      extraGroups = [
-        "networkmanager"
-        "wheel"
-      ];
+      extraGroups =
+        [
+          "networkmanager"
+          "wheel"
+          "docker"
+          "jellyfin"
+        ]
+        ++ lib.optionals (hostname == "home34b") [
+          "fileshare"
+          "multimedia"
+        ];
       shell = pkgs.zsh;
     }
     // lib.optionalAttrs hasPasswordHash {

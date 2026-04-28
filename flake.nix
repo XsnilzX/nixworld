@@ -51,6 +51,8 @@
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    goather.url = "github:XsnilzX/goather";
   };
 
   outputs = inputs @ {

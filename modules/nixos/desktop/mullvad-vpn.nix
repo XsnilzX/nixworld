@@ -1,7 +1,6 @@
 _: {
   flake.nixosModules.desktop-mullvad-vpn = {
     lib,
-    pkgs,
     username,
     ...
   }: {

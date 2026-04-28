@@ -1,9 +1,5 @@
 _: {
-  flake.homeModules.dev-common = {
-    pkgs,
-    lib,
-    ...
-  }: {
+  flake.homeModules.dev-common = {pkgs, ...}: {
     home.packages = with pkgs; [
       # nix ide
       alejandra
@@ -11,8 +7,6 @@ _: {
       age
       sops
 
-      # Coding
-      uv
       stdenv.cc.cc.lib
       python313
     ];
