@@ -82,11 +82,11 @@ Beispiel fuer die Client-Seite:
 
 ### ZFS-Dataset fuer Harmonia anlegen
 
-Wenn Harmonia die Artefakte wirklich von `Big-Data` servieren soll, muss das Dataset auf den alternativen Store-Pfad gemountet werden, also auf `/mnt/BigData/nix/store`.
+Wenn Harmonia die Artefakte wirklich von `Big-Data` servieren soll, muss das Dataset auf den alternativen Store-Pfad gemountet werden, also auf `/Big-Data/nix/store`.
 
 ```bash
 sudo zfs create \
-  -o mountpoint=/BigData/nix/store \
+  -o mountpoint=/Big-Data/nix/store \
   -o compression=zstd \
   -o atime=off \
   -o xattr=sa \
@@ -99,7 +99,7 @@ sudo zfs create \
 Danach den alternativen Store-Wurzelpfad anlegen, falls noetig:
 
 ```bash
-sudo mkdir -p /BigData/nix
+sudo mkdir -p /Big-Data/nix
 ```
 
 Hinweise zu den Optionen:
@@ -109,14 +109,14 @@ Hinweise zu den Optionen:
 - `xattr=sa`: legt Extended Attributes effizienter ab.
 - `acltype=posixacl`: passt zu Linux-ACLs.
 - `recordsize=128K`: ein vernuenftiger Allround-Wert fuer groessere Artefakte.
-- `mountpoint=/mnt/BigData/nix/store`: passt zur aktuellen Host-Konfiguration und zu `services.harmonia.settings.real_nix_store`.
+- `mountpoint=/Big-Data/nix/store`: passt zur aktuellen Host-Konfiguration und zu `services.harmonia.settings.real_nix_store`.
 
 Danach muss der alternative Store auch befuellt werden. Harmonia serviert nicht automatisch `/mnt/BigData/nix/store`, nur weil das Dataset existiert.
 
 Ein einzelner Pfad laesst sich zum Beispiel so hinein kopieren:
 
 ```bash
-sudo nix copy --to /mnt/BigData <store-path>
+sudo nix copy --to /Big-Data <store-path>
 ```
 
 Mehrere Build-Ergebnisse kannst du genauso mit `nix copy --to /mnt/BigData` oder ueber einen separaten Build-Workflow dorthin schreiben. Wichtig ist, dass unter `/mnt/BigData/nix/store` echte Nix-Store-Pfade landen.

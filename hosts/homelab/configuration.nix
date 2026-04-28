@@ -100,7 +100,7 @@
         max_connection_rate = 256;
         priority = 40;
         enable_compression = true;
-        real_nix_store = "/BigData/nix/store";
+        real_nix_store = "/Big-Data/nix/store";
       };
     };
 
@@ -272,9 +272,9 @@
   };
 
   systemd.tmpfiles.rules = [
-    "d /BigData 0755 root root -"
-    "d /BigData/nix 0755 root root -"
-    "d /BigData/nix/store 0755 root root -"
+    "d /Big-Data 0755 root root -"
+    "d /Big-Data/nix 0755 root root -"
+    "d /Big-Data/nix/store 0755 root root -"
   ];
 
   system.stateVersion = lib.mkForce "25.11";

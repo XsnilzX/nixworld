@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-STORE_ROOT="${STORE_ROOT:-/mnt/BigData}"
+STORE_ROOT="${STORE_ROOT:-/Big-Data}"
 
 usage() {
   cat <<'EOF'
