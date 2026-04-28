@@ -74,7 +74,7 @@ Beispiel fuer die Client-Seite:
     ];
 
     trusted-public-keys = [
-      "cache.oelfatzen.de-1:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      "cache.oelfatzen.de-1:bUoU97SJt0e2x0192VQf+c1xCyTjfxZ3Jgqqj4iYKSo="
     ];
   };
 }
