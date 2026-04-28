@@ -46,8 +46,8 @@ Die GitHub-Workflows liegen unter [../.github/workflows](../.github/workflows):
 - `ci.yml`: fuehrt `nix flake check`, `alejandra`, `statix` und `deadnix` auf Push und Pull Requests aus
 - `ci.yml`: baut auf Pushes nach `main` ausserdem die Hosts `homelab`, `nixhael` und `nixspo`; `homelab` haengt dabei nun am Profil `profiles/nixos/homelab-server.nix`
 - `update-flake-lock.yml`: laeuft technisch auf `main`, checkt `dev` aus, aktualisiert dort `flake.lock` und erstellt einen PR nach `main`
-- `update-flake-lock.yml`: versucht fuer den erzeugten PR Squash-Auto-Merge zu aktivieren, sobald die erforderlichen Checks erfolgreich sind
-- `update-flake-lock.yml`: bricht vor dem Update ab, wenn `dev` und `main` nicht synchron sind, damit keine weiteren `dev`-Aenderungen in den PR geraten
+- `update-flake-lock.yml`: aktiviert fuer den erzeugten PR Merge-Auto-Merge, damit der resultierende `main`-Commit anschliessend per Fast-Forward nach `dev` gespiegelt werden kann
+- `update-flake-lock.yml`: laeuft auf Pushes nach `main` zusaetzlich als Sync-Job und zieht `dev` per Fast-Forward auf denselben Commit-Stand nach, solange `dev` nicht unabhaengig divergiert ist
 
 Fuer den Build-Upload nach Cachix wird das Repository-Secret `CACHIX_AUTH_TOKEN` erwartet.
 Fuer den automatischen Merge muss im GitHub-Repository ausserdem `Allow auto-merge` aktiviert sein.

@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: "0 3 * * 1"
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 concurrency:
   group: ${{ github.workflow }}
@@ -11,6 +14,7 @@ concurrency:
 
 jobs:
   update:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -64,7 +68,7 @@ jobs:
           Source branch: `dev`
           Target branch: `main`
 
-          This PR was created by GitHub Actions and is configured for squash auto-merge after required checks pass.
+          This PR was created by GitHub Actions and is configured for merge auto-merge after required checks pass.
           EOF
 
           pr_number="$(gh pr list --base main --head dev --state open --json number --jq '.[0].number')"
@@ -101,4 +105,34 @@ jobs:
         if: steps.dev_to_main_pr.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge --auto --squash "${{ steps.dev_to_main_pr.outputs.pull-request-number }}"
+        run: gh pr merge --auto --merge "${{ steps.dev_to_main_pr.outputs.pull-request-number }}"
+
+  sync-dev-with-main:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Fetch main and dev
+        run: git fetch origin main dev
+
+      - name: Fast-forward dev to main
+        run: |
+          if ! git merge-base --is-ancestor origin/dev origin/main; then
+            echo "dev is not an ancestor of main; refusing to overwrite diverged dev."
+            exit 1
+          fi
+
+          if [ "$(git rev-parse origin/dev)" = "$(git rev-parse origin/main)" ]; then
+            echo "dev is already up to date with main."
+            exit 0
+          fi
+
+          git push origin origin/main:refs/heads/dev
