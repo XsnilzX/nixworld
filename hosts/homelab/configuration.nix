@@ -99,7 +99,7 @@
         workers = 4;
         max_connection_rate = 256;
         priority = 40;
-        enable_compression = true;
+        #enable_compression = true;
         real_nix_store = "/Big-Data/nix/store";
       };
     };
