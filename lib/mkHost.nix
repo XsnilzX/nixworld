@@ -13,6 +13,11 @@
     "stable"
     "unstable"
   ];
+  sharedSpecialArgs =
+    {
+      inherit inputs self hostname username nixpkgsChannel;
+    }
+    // specialArgs;
 
   selectedNixpkgs =
     if nixpkgsChannel == "stable"
@@ -30,11 +35,7 @@ in
     selectedNixpkgs.lib.nixosSystem {
       inherit system;
 
-      specialArgs =
-        {
-          inherit inputs self hostname username nixpkgsChannel;
-        }
-        // specialArgs;
+      specialArgs = sharedSpecialArgs;
 
       modules =
         [
@@ -49,9 +50,7 @@ in
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              extraSpecialArgs = {
-                inherit inputs self hostname username nixpkgsChannel;
-              };
+              extraSpecialArgs = sharedSpecialArgs;
             };
           }
         ]

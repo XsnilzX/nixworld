@@ -27,6 +27,13 @@
 
   mkHostConfig = host: let
     inherit (host) meta;
+    metadataSpecialArgs = builtins.removeAttrs meta [
+      "system"
+      "username"
+      "nixpkgsChannel"
+      "specialArgs"
+    ];
+    mergedSpecialArgs = (meta.specialArgs or {}) // metadataSpecialArgs;
   in
     if !(meta ? system)
     then builtins.throw "Host metadata for '${host.name}' must define `system`."
@@ -49,8 +56,8 @@
           else {}
         )
         // (
-          if meta ? specialArgs
-          then {inherit (meta) specialArgs;}
+          if mergedSpecialArgs != {}
+          then {specialArgs = mergedSpecialArgs;}
           else {}
         )
       );

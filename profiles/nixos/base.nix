@@ -1,15 +1,21 @@
 {
   pkgs,
+  client ? "server",
+  lib,
   self,
   ...
 }: {
-  imports = [
-    self.nixosModules.base-graphics
-    self.nixosModules.base-locale
-    self.nixosModules.base-nix-settings
-    self.nixosModules.base-openssh
-    self.nixosModules.base-sudo
-  ];
+  imports =
+    [
+      self.nixosModules.base-graphics
+      self.nixosModules.base-locale
+      self.nixosModules.base-nix-settings
+      self.nixosModules.base-openssh
+      self.nixosModules.base-sudo
+    ]
+    ++ lib.optionals (client == "pc") [
+      self.nixosModules.base-plymouth
+    ];
 
   networking.firewall.enable = true;
   networking.networkmanager.enable = true;
