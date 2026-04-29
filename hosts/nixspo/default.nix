@@ -27,6 +27,8 @@
     kernelParams = [
       "amd_pstate=active"
     ];
+
+    plymouth.enable = true;
   };
 
   networking.hostName = "nixspo";
