@@ -55,6 +55,14 @@
         group = "postgres";
         mode = "0400";
       };
+
+      harmoniaSignKey = {
+        sopsFile = ../../secrets/homelab.yaml;
+        key = "harmonia/sign_key";
+        owner = "harmonia";
+        group = "harmonia";
+        mode = "0400";
+      };
     };
 
     templates.caddyCrowdsecEnv = {
@@ -82,6 +90,19 @@
     jellyfin.enable = true;
 
     n8n.environment.WEBHOOK_URL = "https://n8n.${domain}";
+
+    harmonia = {
+      enable = true;
+      signKeyPaths = [config.sops.secrets.harmoniaSignKey.path];
+      settings = {
+        bind = "127.0.0.1:5000";
+        workers = 4;
+        max_connection_rate = 256;
+        priority = 40;
+        #enable_compression = true;
+        real_nix_store = "/Big-Data/nix/store";
+      };
+    };
 
     caddy = {
       enable = true;
@@ -143,6 +164,12 @@
           '';
         };
       in {
+        "cache.${domain}" = {
+          extraConfig = ''
+            ${securityHeaders}
+            reverse_proxy 127.0.0.1:5000
+          '';
+        };
         "immich.${domain}" = mkProxy "localhost:2283";
         "cloud.${domain}" = mkProxy "10.0.20.8:9200";
         "collabora.${domain}" = mkProxy "10.0.20.8:9980";
@@ -238,6 +265,17 @@
 
     matrix-tuwunel.enable = true;
   };
+
+  systemd.services.harmonia = {
+    after = ["zfs-mount.service"];
+    requires = ["zfs-mount.service"];
+  };
+
+  systemd.tmpfiles.rules = [
+    "d /Big-Data 0755 root root -"
+    "d /Big-Data/nix 0755 root root -"
+    "d /Big-Data/nix/store 0755 root root -"
+  ];
 
   system.stateVersion = lib.mkForce "25.11";
 }

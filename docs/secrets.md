@@ -14,6 +14,7 @@
 - Fuer `nixspo` werden aktuell `eduroam` und `luh-vpn` genutzt.
 - Fuer `nixhael` wird aktuell `luh-vpn` genutzt.
 - Fuer `homelab` werden SSH-Keymaterial, Hetzner-DNS, CrowdSec und N8N aus `secrets/homelab.yaml` genutzt.
+- Fuer `homelab` wird zusaetzlich der private Harmonia-Signierschluessel aus `secrets/homelab.yaml` genutzt.
 
 ## Homelab
 
@@ -33,6 +34,8 @@ crowdsec:
 n8n:
   encryption_key: ...
   db_password: ...
+harmonia:
+  sign_key: cache.oelfatzen.de-1:...
 ```
 
 - `ssh_keys` folgt weiter dem bestehenden Host-SSH-Schema und wird von `mkHostSshSecrets` ausgewertet.
@@ -40,6 +43,102 @@ n8n:
 - `crowdsec.caddy_api_key` wird in ein Caddy-Environment-File templated.
 - `n8n.encryption_key` ist der rohe n8n-Encryption-Key.
 - `n8n.db_password` ist das rohe PostgreSQL-Passwort fuer den n8n-User.
+- `harmonia.sign_key` ist der private Binary-Cache-Schluessel fuer `cache.oelfatzen.de`.
+- Der Public Key gehoert nicht in SOPS, sondern spaeter in `nix.settings.trusted-public-keys` der Clients.
+
+### Harmonia-Schluessel erzeugen
+
+Private und Public Key einmalig auf einer vertrauenswuerdigen Maschine erzeugen:
+
+```bash
+nix-store --generate-binary-cache-key \
+  cache.oelfatzen.de-1 \
+  ./cache.oelfatzen.de-1.secret \
+  ./cache.oelfatzen.de-1.pub
+```
+
+Danach:
+
+1. Den Inhalt von `./cache.oelfatzen.de-1.secret` als Klartextwert unter `harmonia.sign_key` in `secrets/homelab.yaml` eintragen.
+2. Den Inhalt von `./cache.oelfatzen.de-1.pub` ausserhalb von SOPS aufbewahren.
+3. Den Public Key spaeter auf Clients unter `nix.settings.trusted-public-keys` eintragen.
+4. Den Cache auf Clients unter `nix.settings.substituters = [ "https://cache.oelfatzen.de" ];` ergaenzen.
+
+Beispiel fuer die Client-Seite:
+
+```nix
+{
+  nix.settings = {
+    substituters = [
+      "https://cache.oelfatzen.de"
+    ];
+
+    trusted-public-keys = [
+      "cache.oelfatzen.de-1:bUoU97SJt0e2x0192VQf+c1xCyTjfxZ3Jgqqj4iYKSo="
+    ];
+  };
+}
+```
+
+### ZFS-Dataset fuer Harmonia anlegen
+
+Wenn Harmonia die Artefakte wirklich von `Big-Data` servieren soll, muss das Dataset auf den alternativen Store-Pfad gemountet werden, also auf `/Big-Data/nix/store`.
+
+```bash
+sudo zfs create \
+  -o mountpoint=/Big-Data/nix/store \
+  -o compression=zstd \
+  -o atime=off \
+  -o xattr=sa \
+  -o acltype=posixacl \
+  -o relatime=on \
+  -o recordsize=128K \
+  Big-Data/nix-cache
+```
+
+Danach den alternativen Store-Wurzelpfad anlegen, falls noetig:
+
+```bash
+sudo mkdir -p /Big-Data/nix
+```
+
+Hinweise zu den Optionen:
+
+- `compression=zstd`: spart Platz ohne grossen CPU-Overhead.
+- `atime=off`: vermeidet unnoetige Schreiblast durch Zugriffszeiten.
+- `xattr=sa`: legt Extended Attributes effizienter ab.
+- `acltype=posixacl`: passt zu Linux-ACLs.
+- `recordsize=128K`: ein vernuenftiger Allround-Wert fuer groessere Artefakte.
+- `mountpoint=/Big-Data/nix/store`: passt zur aktuellen Host-Konfiguration und zu `services.harmonia.settings.real_nix_store`.
+
+Danach muss der alternative Store auch befuellt werden. Harmonia serviert nicht automatisch `/mnt/BigData/nix/store`, nur weil das Dataset existiert.
+
+Ein einzelner Pfad laesst sich zum Beispiel so hinein kopieren:
+
+```bash
+sudo nix copy --to /Big-Data <store-path>
+```
+
+Mehrere Build-Ergebnisse kannst du genauso mit `nix copy --to /mnt/BigData` oder ueber einen separaten Build-Workflow dorthin schreiben. Wichtig ist, dass unter `/mnt/BigData/nix/store` echte Nix-Store-Pfade landen.
+
+Im Repo gibt es dafuer auch einen kleinen Helfer:
+
+```bash
+scripts/copy-to-bigdata-store.sh .#nixosConfigurations.homelab.config.system.build.toplevel
+```
+
+Weitere Beispiele:
+
+```bash
+scripts/copy-to-bigdata-store.sh .#packages.x86_64-linux.hello
+scripts/copy-to-bigdata-store.sh \
+  .#nixosConfigurations.homelab.config.system.build.toplevel \
+  .#packages.x86_64-linux.hello
+```
+
+Der Wrapper nutzt intern `sudo nix copy --to /mnt/BigData ...`. Falls dein alternativer Store auf einem anderen Pool liegt, kannst du das Ziel mit `STORE_ROOT=/anderer/pfad` ueberschreiben.
+
+Falls du das Dataset auch per Sanoid sichern willst, ergaenze zusaetzlich einen passenden Eintrag in `services.zfsBackup.sanoidDatasets`, zum Beispiel fuer `Big-Data/nix/store`.
 
 ## Eduroam
 
