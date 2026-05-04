@@ -1,8 +1,49 @@
 _: {
-  flake.homeModules.dev-vscode = {pkgs, ...}: {
-    programs.vscode = {
+  flake.homeModules.dev-vscode = {
+    config,
+    lib,
+    nixpkgsChannel,
+    pkgs,
+    ...
+  }: let
+    isStable = nixpkgsChannel == "stable";
+    profileNames = [
+      "C-C++"
+      "Go"
+      "Java"
+      "Nix-OS"
+      "Python"
+      "Rust"
+      "Typst"
+    ];
+
+    profileFiles =
+      lib.concatMap (profileName: [
+        "${config.home.homeDirectory}/.config/VSCodium/User/profiles/${profileName}/extensions.json"
+        "${config.home.homeDirectory}/.config/VSCodium/User/profiles/${profileName}/settings.json"
+      ])
+      profileNames;
+    vscodiumMigration = lib.optionalAttrs (!isStable) {
+      home.activation.prepareVscodiumExtensionLink = lib.hm.dag.entryBefore ["linkGeneration"] ''
+        target="${config.home.homeDirectory}/.vscode-oss/extensions"
+        if [ -d "$target" ] && [ ! -L "$target" ]; then
+          run rm -rf "$target"
+        fi
+      '';
+
+      home.file =
+        lib.genAttrs (
+          [
+            ".vscode-oss/extensions"
+            "${config.home.homeDirectory}/.config/VSCodium/User/settings.json"
+          ]
+          ++ profileFiles
+        ) (_: {
+          force = true;
+        });
+    };
+    vscodeConfig = {
       enable = true;
-      package = pkgs.vscodium;
       mutableExtensionsDir = false;
       profiles = {
         default = {
@@ -179,5 +220,20 @@ _: {
         };
       };
     };
-  };
+  in
+    vscodiumMigration
+    // {
+      programs =
+        if isStable
+        then {
+          vscode =
+            vscodeConfig
+            // {
+              package = pkgs.vscodium;
+            };
+        }
+        else {
+          vscodium = vscodeConfig;
+        };
+    };
 }

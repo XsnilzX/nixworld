@@ -11,7 +11,7 @@ _: {
       fileManager = "thunar";
       appLauncher = "anyrun";
       mail = "thunderbird";
-      code = lib.getExe config.programs.vscode.package;
+      code = lib.getExe config.programs.vscodium.package;
     };
   };
 }

@@ -8,7 +8,7 @@
     [
       ../../profiles/home/base.nix
     ]
-    ++ lib.optionals (hostname != "homelab") [
+    ++ lib.optionals (hostname != "homelab" || hostname != "home34b") [
       ../../profiles/home/dev.nix
     ]
     ++ lib.optionals (hostname == "nixspo") [
