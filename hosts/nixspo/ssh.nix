@@ -68,6 +68,17 @@
       port = 2212;
       proxyJump = "lab";
     };
+    "krul" = {
+      hostname = "krul.finf.uni-hannover.de";
+      user = "xsnilzx";
+      identityFile = "${sshPath}/krul";
+    };
+    "johndoe" = {
+      hostname = "finf.uni-hannover.de";
+      user = "Richard";
+      identityFile = "${sshPath}/johndoe";
+      identitiesOnly = true;
+    };
   };
 in {
   users.users.${username}.openssh.authorizedKeys.keys = authorizedKeys;
@@ -86,6 +97,8 @@ in {
       enableDefaultConfig = false;
       inherit matchBlocks;
     };
+
+    home.file.".ssh/config".force = true;
 
     home.activation.materializeSshConfig = lib.hm.dag.entryAfter ["linkGeneration"] ''
       run mkdir -p ${lib.escapeShellArg sshPath}
