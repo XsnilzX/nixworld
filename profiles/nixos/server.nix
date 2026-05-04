@@ -1,4 +1,4 @@
-{self, ...}: {
+{
   imports = [
     ./base.nix
   ];
