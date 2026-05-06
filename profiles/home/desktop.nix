@@ -48,6 +48,7 @@
 
     firefox = {
       enable = true;
+      configPath = ".mozilla/firefox";
       languagePacks = ["de"];
       policies = {
         ShowHomeButton = true;

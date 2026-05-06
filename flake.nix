@@ -80,6 +80,18 @@
       };
 
       perSystem = {pkgs, ...}: {
+        formatter = pkgs.writeShellApplication {
+          name = "alejandra";
+          runtimeInputs = [pkgs.alejandra];
+          text = ''
+            if [ "$#" -eq 0 ]; then
+              exec alejandra .
+            fi
+
+            exec alejandra "$@"
+          '';
+        };
+
         devShells = rec {
           default = repo;
 
