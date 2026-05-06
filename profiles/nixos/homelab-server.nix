@@ -15,6 +15,7 @@
     self.nixosModules.services-zfs-extra
     self.nixosModules.services-monitoring
     self.nixosModules.services-samba
+    self.nixosModules.services-headscale
   ];
 
   environment.systemPackages = with pkgs; [

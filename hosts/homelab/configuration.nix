@@ -87,6 +87,13 @@
       dbPasswordSecret = "n8nDbPassword";
     };
 
+    homelabHeadscale = {
+      enable = true;
+      domain = "headscale.${domain}";
+      tailnetDomain = "tailnet.${domain}";
+      prepareSubnetRouting = true;
+    };
+
     jellyfin.enable = true;
 
     n8n.environment.WEBHOOK_URL = "https://n8n.${domain}";
